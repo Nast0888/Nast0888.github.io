@@ -98,7 +98,6 @@
   </style>
 </head>
 <body>
-  <!-- Pantalla de carga inicial -->
   <div id="loading">
     Verificando seguridad...
     <div style="margin-top: 20px; font-size: 14px; color: #999;">
@@ -106,7 +105,6 @@
     </div>
   </div>
   
-  <!-- Mensaje de ÉXITO (sin bloqueador) -->
   <div id="successMessage" class="message success" style="display: none;">
     <h1 style="color: #27ae60;">✓ Verificación Exitosa</h1>
     <p>Redirigiendo al contenido en <span id="countdown">3</span> segundos...</p>
@@ -119,7 +117,6 @@
     <a href="#" id="directLink" class="btn btn-success">Acceder al contenido ahora</a>
   </div>
   
-  <!-- Mensaje de ERROR (con bloqueador) -->
   <div id="errorMessage" class="message error" style="display: none;">
     <h1 style="color: #e74c3c;">⛔ Bloqueador Detectado</h1>
     <p><strong>Se ha detectado un bloqueador de anuncios o contenido.</strong></p>
@@ -139,14 +136,11 @@
     </div>
   </div>
 
-  <!-- ================= TRAMPAS ================= -->
-  <!-- Elementos que los bloqueadores atacan -->
   <div class="publi" id="ad1"></div>
   <div class="ad-frame" id="ad2"></div>
   <div class="adsbygoogle" id="ad3"></div>
   <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-123456789" data-ad-slot="123456789"></ins>
   
-  <!-- Script de ads que será bloqueado -->
   <script>
     var fakeAdScript = document.createElement('script');
     fakeAdScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
@@ -156,7 +150,6 @@
     document.head.appendChild(fakeAdScript);
   </script>
 
-  <!-- ================= LÓGICA PRINCIPAL ================= -->
   <script>
     // URL de destino
     const TARGET_URL = "https://devuploads.com/nvgoz9e9zjag";
