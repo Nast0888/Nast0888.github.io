@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Verificar AdBlock — continuar</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; }
+    #content { display: none; }
+    #blocked { display: none; color: red; border: 2px solid red; padding: 20px; margin: 20px auto; max-width: 600px; }
+    #continueBtn { display: none; margin-top: 20px; padding: 10px 20px; background: green; color: white; border: none; cursor: pointer; }
+    
+    /* Trampas que los bloqueadores BUSCAN activamente */
+    .adsbygoogle, .ad-container, .ad_box, [class*="ad-"], [id*="ad_"] {
+      width: 1px;
+      height: 1px;
+      position: absolute;
+      top: -100px;
+      left: -100px;
+      display: block !important;
+    }
+    
+    /* Una trampa más obvia */
+    #google_ads_frame1 {
+      display: block !important;
+      width: 728px;
+      height: 90px;
+      position: absolute;
+      top: -9999px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ESTE es el contenido cuando NO hay bloqueador -->
+  <div id="content">
+    <h2>✓ AdBlock no detectado</h2>
+    <p>Redirigiendo en 3 segundos...</p>
+    <p><a href="https://devuploads.com/nvgoz9e9zjag">Haz clic aquí si no redirige automáticamente</a></p>
+  </div>
+
+  <!-- ESTE es el contenido cuando SÍ hay bloqueador -->
+  <div id="blocked">
+    <h2>⚠️ BLOQUEADOR DE ANUNCIOS DETECTADO</h2>
+    <p><strong>Se ha detectado un bloqueador de anuncios (AdBlock, uBlock, etc.)</strong></p>
+    <p>Para acceder al contenido, debes:</p>
+    <ol style="text-align: left; display: inline-block; margin: 20px auto;">
+      <li>Desactivar completamente tu bloqueador de anuncios</li>
+      <li>Recargar esta página</li>
+      <li>O hacer clic en el botón de abajo para intentar continuar</li>
+    </ol>
+    <button id="continueBtn" onclick="bypassAdblock()">Intentar continuar</button>
+  </div>
+
+  <!-- MÚLTIPLES TRAMPAS que los bloqueadores reconocen -->
+  <div class="adsbygoogle"></div>
+  <div id="ad_container"></div>
+  <div class="ad-box"></div>
+  <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-123456789"></ins>
+  <div id="ad_banner"></div>
+  <div class="advertisement"></div>
+
+  <script>
+    // Variable global para control
+    let adblockDetected = false;
+    
+    // Función principal de detección - MÁS AGRESIVA
+    function checkAdBlock() {
+      // Método 1: Verificar si elementos "ad" están ocultos
+      const testAd = document.createElement('div');
+      testAd.className = 'ad-box ad-container';
+      testAd.id = 'test-adblock-detection';
+      testAd.innerHTML = '&nbsp;';
+      testAd.style.width = '300px';
+      testAd.style.height = '250px';
+      testAd.style.position = 'absolute';
+      testAd.style.top = '-9999px';
+      testAd.style.left = '-9999px';
+      testAd.style.zIndex = '999999';
+      document.body.appendChild(testAd);
+      
+      // Verificar inmediatamente
+      setTimeout(() => {
+        const styles = window.getComputedStyle(testAd);
+        if (testAd.offsetHeight === 0 || 
+            testAd.offsetWidth === 0 || 
+            styles.display === 'none' || 
+            styles.visibility === 'hidden' ||
+            styles.opacity === '0') {
+          adblockDetected = true;
+        }
+        
+        // Método 2: Intentar cargar script de Google Ads (los bloqueadores lo bloquean)
+        const script = document.createElement('script');
+        script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+        script.onerror = () => {
+          adblockDetected = true;
+        };
+        script.onload = () => {
+          // Si carga, probablemente no hay bloqueador
+          adblockDetected = false;
+        };
+        document.head.appendChild(script);
+        
+        // Método 3: Verificar si hay elementos con display none que deberían ser visibles
+        const adElements = document.querySelectorAll('.adsbygoogle, .ad-container, .ad_box');
+        adElements.forEach(el => {
+          const style = window.getComputedStyle(el);
+          if (style.display === 'none' || style.visibility === 'hidden') {
+            adblockDetected = true;
+          }
+        });
+        
+        // Método 4: Intentar fetch a dominio de anuncios
+        fetch('https://google-analytics.com/analytics.js', { 
+          mode: 'no-cors',
+          cache: 'no-store'
+        }).catch(() => {
+          adblockDetected = true;
+        });
+        
+        // QUITAR el elemento de prueba
+        document.body.removeChild(testAd);
+        
+        // MOSTRAR el resultado CORRECTO
+        showCorrectContent();
+      }, 500);
+    }
+    
+    // Función para mostrar el contenido correcto
+    function showCorrectContent() {
+      if (adblockDetected) {
+        // MOSTRAR mensaje de bloqueo
+        document.getElementById('blocked').style.display = 'block';
+        document.getElementById('content').style.display = 'none';
+        document.getElementById('continueBtn').style.display = 'inline-block';
+      } else {
+        // MOSTRAR redirección SOLO si no hay bloqueador
+        document.getElementById('content').style.display = 'block';
+        document.getElementById('blocked').style.display = 'none';
+        
+        // Redirigir después de 3 segundos
+        setTimeout(() => {
+          window.location.href = "https://devuploads.com/nvgoz9e9zjag";
+        }, 3000);
+      }
+    }
+    
+    // Función para intentar continuar
+    function bypassAdblock() {
+      // Resetear detección
+      adblockDetected = false;
+      // Volver a verificar
+      checkAdBlock();
+    }
+    
+    // Iniciar cuando la página cargue
+    window.addEventListener('load', function() {
+      // Inicialmente ocultar todo
+      document.getElementById('content').style.display = 'none';
+      document.getElementById('blocked').style.display = 'none';
+      
+      // Esperar 1 segundo para que el bloqueador actúe
+      setTimeout(() => {
+        checkAdBlock();
+      }, 1000);
+    });
+    
+    // También verificar cada 5 segundos por si activan/desactivan el bloqueador
+    setInterval(() => {
+      if (!adblockDetected) {
+        checkAdBlock();
+      }
+    }, 5000);
+  </script>
+
+</body>
+</html>
