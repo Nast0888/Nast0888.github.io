@@ -1,167 +1,123 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Acceso</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      padding: 50px;
-      background: #f5f5f5;
-    }
-    #blocked {
-      background: white;
-      padding: 40px;
-      border-radius: 10px;
-      max-width: 500px;
-      margin: 0 auto;
-      border-left: 5px solid #ff4444;
-      box-shadow: 0 5px 15px rgba(255, 68, 68, 0.2);
-    }
-    #allowed {
-      background: white;
-      padding: 40px;
-      border-radius: 10px;
-      max-width: 500px;
-      margin: 0 auto;
-      border-left: 5px solid #00C851;
-      box-shadow: 0 5px 15px rgba(0, 200, 81, 0.2);
-    }
-    h2 {
-      margin-top: 0;
-    }
-    .red {
-      color: #ff4444;
-    }
-    .green {
-      color: #00C851;
-    }
-    .btn {
-      display: inline-block;
-      padding: 12px 30px;
-      background: #33b5e5;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 10px;
-      font-size: 16px;
-      text-decoration: none;
-    }
-    .btn-red {
-      background: #ff4444;
-    }
-    .btn-green {
-      background: #00C851;
-    }
-    
-    /* Elemento trampa - los bloqueadores lo ocultan */
-    #adBanner {
-      position: absolute;
-      top: -9999px;
-      width: 300px;
-      height: 250px;
-      background: transparent;
-      border: 1px dashed #ccc;
-    }
-    
-    #adBanner:before {
-      content: "Publicidad";
-      color: #666;
-      font-size: 12px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Verificación</title>
+<style>
+body { margin: 0; padding: 0; font-family: Arial; }
+</style>
 </head>
 <body>
 
-<!-- CONTENIDO BLOQUEADO (se muestra SI hay bloqueador) -->
-<div id="blocked" style="display: none;">
-  <h2 class="red">🚫 BLOQUEADOR DETECTADO</h2>
-  <p><strong>Desactiva AdBlock, uBlock o cualquier bloqueador de anuncios.</strong></p>
-  <p>Después, recarga esta página.</p>
-  <button onclick="location.reload()" class="btn btn-red">Ya lo desactivé, recargar</button>
-</div>
-
-<!-- CONTENIDO PERMITIDO (se muestra SOLO si NO hay bloqueador) -->
-<div id="allowed" style="display: none;">
-  <h2 class="green">✓ ACCESO PERMITIDO</h2>
-  <p>Redirigiendo en <span id="timer">3</span> segundos...</p>
-  <a href="https://devuploads.com/nvgoz9e9zjag" class="btn btn-green">Acceder ahora</a>
-</div>
-
-<!-- ELEMENTO TRAMPA (los bloqueadores lo ocultan) -->
-<div id="adBanner"></div>
-
 <script>
-// Función ULTRA SIMPLE de detección
-function checkAdBlock() {
-  const adElement = document.getElementById('adBanner');
-  
-  // Si el elemento NO existe o está oculto = HAY BLOQUEADOR
-  if (!adElement) {
-    return true; // Bloqueador detectado
-  }
-  
-  // Verificar estilo
-  const style = window.getComputedStyle(adElement);
-  if (style.display === 'none' || 
-      style.visibility === 'hidden' || 
-      adElement.offsetHeight === 0 || 
-      adElement.offsetWidth === 0) {
-    return true; // Bloqueador detectado
-  }
-  
-  return false; // No hay bloqueador
-}
+// ============================================
+// DETECTOR ULTRA-EFECTIVO DE ADBLOCK
+// ============================================
 
-// Función para mostrar resultado
-function showResult() {
-  const hasAdBlock = checkAdBlock();
+// 1. Crear elemento que los bloqueadores SI reconocen
+var fakeAd = document.createElement('div');
+fakeAd.id = 'google_ads_iframe_1';
+fakeAd.className = 'adsbygoogle adsbygoogle-noablate';
+fakeAd.style.cssText = 'width: 300px; height: 250px; position: absolute; top: -9999px; left: -9999px; z-index: 999999;';
+fakeAd.innerHTML = '<ins class="adsbygoogle" style="display:inline-block;width:300px;height:250px" data-ad-client="ca-pub-123456789" data-ad-slot="123456789"></ins>';
+
+// 2. Añadir texto que los bloqueadores buscan
+var adText = document.createElement('div');
+adText.innerHTML = 'Advertisement';
+adText.style.cssText = 'position: absolute; top: -9999px; color: #666; font-size: 12px;';
+fakeAd.appendChild(adText);
+
+// 3. Añadir a la página
+document.body.appendChild(fakeAd);
+
+// 4. Intentar cargar script de Google Ads (bloqueado por adblock)
+var script = document.createElement('script');
+script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+script.onerror = function() {
+  window.adblockDetected = true;
+};
+document.head.appendChild(script);
+
+// 5. Verificar después de 500ms
+setTimeout(function() {
+  var isBlocked = false;
   
-  if (hasAdBlock) {
-    // HAY BLOQUEADOR: Mostrar mensaje de bloqueo
-    document.getElementById('blocked').style.display = 'block';
-    document.getElementById('allowed').style.display = 'none';
-    console.log('🚫 Bloqueador detectado - NO se redirige');
+  // Verificar si el elemento fue ocultado
+  var adElement = document.getElementById('google_ads_iframe_1');
+  if (!adElement) {
+    isBlocked = true;
   } else {
-    // NO HAY BLOQUEADOR: Redirigir
-    document.getElementById('blocked').style.display = 'none';
-    document.getElementById('allowed').style.display = 'block';
+    var style = window.getComputedStyle(adElement);
+    if (style.display === 'none' || adElement.offsetHeight === 0) {
+      isBlocked = true;
+    }
+  }
+  
+  // Verificar si el script fue bloqueado
+  if (window.adblockDetected) {
+    isBlocked = true;
+  }
+  
+  // ============================================
+  // MOSTRAR RESULTADO
+  // ============================================
+  if (isBlocked) {
+    // CON ADBLOCK: BLOQUEAR COMPLETAMENTE
+    document.body.innerHTML = `
+      <div style="text-align:center; padding:50px; max-width:600px; margin:100px auto; border:3px solid red; border-radius:10px;">
+        <h1 style="color:#d32f2f; font-size:28px;">⛔ ADBLOCK ACTIVADO</h1>
+        <p style="font-size:18px; margin:20px 0;"><strong>Se detectó AdBlock, uBlock Origin u otro bloqueador.</strong></p>
+        
+        <div style="background:#ffebee; padding:20px; border-radius:5px; margin:20px 0; text-align:left;">
+          <h3 style="margin-top:0;">Para continuar:</h3>
+          <ol>
+            <li><strong>Haz clic en el icono de tu bloqueador</strong> (🔴⛔🛡️) en la barra de extensiones</li>
+            <li>Selecciona <strong>"Desactivar en este sitio"</strong> o <strong>"Pausar"</strong></li>
+            <li><strong>Recarga esta página</strong> (F5 o Ctrl+R)</li>
+          </ol>
+        </div>
+        
+        <button onclick="location.reload()" style="padding:15px 30px; background:#d32f2f; color:white; border:none; border-radius:5px; font-size:16px; cursor:pointer; font-weight:bold;">
+          🔄 YA DESACTIVÉ ADBLOCK, RECARGAR
+        </button>
+      </div>
+    `;
     
-    // Redirección automática después de 3 segundos
-    let seconds = 3;
-    const timerElement = document.getElementById('timer');
+    // NUNCA REDIRIGIR SI HAY ADBLOCK
+    console.log('🚫 ADBLOCK DETECTADO - ACCESO BLOQUEADO');
     
-    const countdown = setInterval(function() {
+  } else {
+    // SIN ADBLOCK: REDIRIGIR
+    document.body.innerHTML = `
+      <div style="text-align:center; padding:50px;">
+        <h1 style="color:#00C851; font-size:28px;">✓ Acceso permitido</h1>
+        <p style="font-size:18px;">Redirigiendo en <span id="count" style="font-weight:bold;">3</span> segundos...</p>
+        <div style="width:300px; height:10px; background:#eee; border-radius:5px; margin:30px auto; overflow:hidden;">
+          <div id="progress" style="height:100%; background:#00C851; width:0%; transition:width 1s;"></div>
+        </div>
+        <a href="https://devuploads.com/nvgoz9e9zjag" style="display:inline-block; padding:12px 30px; background:#33b5e5; color:white; text-decoration:none; border-radius:5px; font-size:16px; margin-top:20px;">
+          Acceder ahora
+        </a>
+      </div>
+    `;
+    
+    // Redirección automática
+    var seconds = 3;
+    var countElement = document.getElementById('count');
+    var progressElement = document.getElementById('progress');
+    
+    var interval = setInterval(function() {
       seconds--;
-      if (timerElement) {
-        timerElement.textContent = seconds;
-      }
+      countElement.textContent = seconds;
+      progressElement.style.width = ((3 - seconds) / 3 * 100) + '%';
       
       if (seconds <= 0) {
-        clearInterval(countdown);
-        // SOLO REDIRIGE si NO hay bloqueador
+        clearInterval(interval);
         window.location.href = "https://devuploads.com/nvgoz9e9zjag";
       }
     }, 1000);
   }
-}
-
-// Iniciar cuando la página cargue
-window.addEventListener('load', function() {
-  // Esperar 1 segundo para que el bloqueador actúe
-  setTimeout(showResult, 1000);
-});
-
-// También verificar si el usuario hace clic derecho (bloqueadores a veces interceptan)
-document.addEventListener('contextmenu', function(e) {
-  // Verificar si estamos en modo bloqueado
-  if (document.getElementById('blocked').style.display === 'block') {
-    alert('⚠️ Desactiva el bloqueador para continuar');
-    e.preventDefault();
-  }
-});
+}, 500);
 </script>
 
 </body>
