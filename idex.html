@@ -2,453 +2,646 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Acceso al contenido</title>
+  <title>Verificación de Seguridad</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      padding: 50px;
-      background: #f5f5f5;
-    }
-    
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-    }
-    
-    #normalAccess {
-      display: none;
-      color: green;
-    }
-    
-    #blockedAccess {
-      display: none;
-      color: #d32f2f;
-      border-left: 5px solid #d32f2f;
-      padding: 20px;
-      background: #ffebee;
-      text-align: left;
-    }
-    
-    #blockedAccess h2 {
-      margin-top: 0;
-    }
-    
-    .instructions {
-      background: #fff8e1;
-      padding: 15px;
-      border-radius: 5px;
-      margin: 20px 0;
-    }
-    
-    button {
-      background: #1976d2;
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 10px;
-    }
-    
-    button:hover {
-      background: #1565c0;
-    }
-    
-    button#forceAccess {
-      background: #388e3c;
-    }
-    
-    /* ESTILOS INVISIBLES PARA TRAMPAS - NO MODIFICAR */
-    .adsbygoogle-noablate,
-    .pub_300x250,
-    .ad-placement,
-    ._ap_apex_ad,
-    .advertising-notice,
-    .ad-unit,
-    .ads-system,
-    .ad-container,
-    #div-gpt-ad,
-    #ad-wrapper,
-    [data-ad-status="unfilled"],
-    [data-adblockdetector="true"] {
-      display: block !important;
+    /* RESET COMPLETO - Todo invisible por defecto */
+    * {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      height: 0 !important;
+      width: 0 !important;
       position: absolute !important;
       top: -9999px !important;
       left: -9999px !important;
-      width: 1px !important;
-      height: 1px !important;
-      overflow: hidden !important;
-      opacity: 0.001 !important;
-      pointer-events: none !important;
-      z-index: -9999 !important;
     }
     
-    /* Una trampa que parece real */
-    #carbon-ads {
+    /* SOLO estos elementos pueden ser visibles si los permitimos */
+    #accessDenied,
+    #accessGranted,
+    body.verified #accessGranted,
+    body.verified #accessDenied {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      position: static !important;
+      height: auto !important;
+      width: auto !important;
+      top: auto !important;
+      left: auto !important;
+    }
+    
+    /* Estilos cuando permitimos mostrar contenido */
+    body.verified {
+      all: initial;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    body.verified * {
+      display: revert !important;
+      visibility: revert !important;
+      opacity: revert !important;
+      position: revert !important;
+      height: revert !important;
+      width: revert !important;
+      top: revert !important;
+      left: revert !important;
+    }
+    
+    .access-container {
+      background: white;
+      border-radius: 15px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+    }
+    
+    .granted {
+      color: #27ae60;
+    }
+    
+    .denied {
+      color: #e74c3c;
+    }
+    
+    h1 {
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+    
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      color: #555;
+    }
+    
+    .icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    
+    .btn {
+      display: inline-block;
+      background: #3498db;
+      color: white;
+      padding: 12px 30px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 20px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn:hover {
+      background: #2980b9;
+      transform: translateY(-2px);
+    }
+    
+    .btn-success {
+      background: #2ecc71;
+    }
+    
+    .btn-success:hover {
+      background: #27ae60;
+    }
+    
+    .btn-danger {
+      background: #e74c3c;
+    }
+    
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+    
+    .steps {
+      text-align: left;
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+    }
+    
+    .steps li {
+      margin-bottom: 10px;
+    }
+    
+    /* Estos elementos siempre están ocultos para detectores */
+    #adBlockDetector1,
+    #adBlockDetector2,
+    #adBlockDetector3,
+    .adsbygoogle-special,
+    .ad-sensor-frame,
+    .google-auto-placed,
+    ._ap_apex_ad_sensor,
+    .pub_300x250_sensor,
+    .ad-placement-sensor,
+    [data-adblock="sensor"],
+    [data-adsbygoogle-status],
+    #div-gpt-ad-sensor,
+    #carbonads-sensor,
+    .ads-system-sensor {
+      all: unset !important;
+      display: block !important;
       width: 300px !important;
       height: 250px !important;
+      position: absolute !important;
+      top: -9999px !important;
+      left: -9999px !important;
       background: transparent !important;
-      border: none !important;
+      border: 1px solid transparent !important;
+      z-index: 2147483647 !important;
+    }
+    
+    /* Estilos que activarán los bloqueadores */
+    #adBlockDetector1:before {
+      content: "Advertisement" !important;
+      color: #999 !important;
+      font-size: 12px !important;
+    }
+    
+    .adsbygoogle-special:before {
+      content: "Ads by Google" !important;
+      color: #666 !important;
+    }
+    
+    /* CSS que los bloqueadores modifican */
+    #adBlockDetector2[style*="display: none"],
+    #adBlockDetector2[style*="height: 0"],
+    #adBlockDetector2[style*="visibility: hidden"] {
+      /* Estos estilos son aplicados por bloqueadores */
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    
-    <!-- ESTE CONTENIDO SE MUESTRA SOLO SIN BLOQUEADOR -->
-    <div id="normalAccess">
-      <h1>✓ Acceso permitido</h1>
-      <p>Redirigiendo a la descarga en <span id="countdown">5</span> segundos...</p>
-      <div class="instructions">
-        <p><strong>Enlace directo:</strong> <a href="#" id="directLink">Haz clic aquí si no redirige automáticamente</a></p>
-      </div>
-    </div>
-    
-    <!-- ESTE CONTENIDO SE MUESTRA CON BLOQUEADOR -->
-    <div id="blockedAccess">
-      <h2>⛔ ACCESO BLOQUEADO</h2>
-      <p><strong>Se ha detectado software de bloqueo de anuncios o seguridad.</strong></p>
+  <!-- CONTENIDO NEGADO (se muestra solo si hay bloqueador) -->
+  <div id="accessDenied" style="display: none;">
+    <div class="access-container">
+      <div class="icon denied">⛔</div>
+      <h1 class="denied">ACCESO DENEGADO</h1>
+      <p><strong>Se ha detectado software de bloqueo o seguridad que impide el acceso.</strong></p>
       
-      <div class="instructions">
-        <h3>Para continuar, necesitas:</h3>
+      <div class="steps">
+        <h3>Para desbloquear el acceso:</h3>
         <ol>
-          <li><strong>Desactivar completamente</strong> AdBlock, uBlock Origin, uMatrix, AdGuard o cualquier extensión similar</li>
-          <li><strong>Recargar esta página</strong> después de desactivarlo</li>
-          <li>O intentar acceder desde otro navegador sin extensiones de bloqueo</li>
+          <li>Cierra todas las pestañas de este sitio</li>
+          <li>Desactiva completamente <strong>AdBlock, uBlock Origin, AdGuard</strong> o cualquier bloqueador</li>
+          <li>Desactiva el modo "Protección mejorada" o "Strict" del navegador</li>
+          <li>Si usas Brave, desactiva "Brave Shields"</li>
+          <li>Si usas Firefox, desactiva "Protección mejorada contra rastreo"</li>
+          <li><strong>Reinicia el navegador</strong></li>
+          <li>Vuelve a intentar acceder</li>
         </ol>
-        
-        <p><strong>Nota:</strong> Algunos navegadores como Brave o Firefox con protecciones estrictas también activan esta detección.</p>
       </div>
       
-      <div>
-        <button onclick="location.reload()">Ya desactivé el bloqueador, recargar</button>
-        <button id="forceAccess">Intentar acceso forzado</button>
+      <p><strong>Nota:</strong> Algunas extensiones de privacidad como Privacy Badger también activan esta protección.</p>
+      
+      <div style="margin-top: 30px;">
+        <button class="btn btn-danger" onclick="forceRetry()">Reintentar verificación</button>
       </div>
       
-      <p style="font-size: 12px; margin-top: 20px; color: #666;">
-        Este sitio requiere desactivar bloqueadores para garantizar la sostenibilidad del servicio.
+      <p style="font-size: 12px; color: #888; margin-top: 30px;">
+        Código de error: <span id="errorCode">ADBLOCK_ACTIVE</span>
       </p>
     </div>
-    
   </div>
-
-  <!-- ============================================= -->
-  <!-- ZONA DE TRAMPAS PARA BLOQUEADORES - NO BORRAR -->
-  <!-- ============================================= -->
   
-  <!-- Trampas clásicas que todos los bloqueadores reconocen -->
-  <div class="adsbygoogle" id="div-gpt-ad-123456789-0" style="width: 300px; height: 250px;"></div>
-  <ins class="adsbygoogle" data-ad-client="ca-pub-1234567890123456" data-ad-slot="1234567890" style="display:block;"></ins>
-  <div id="carbon-ads"></div>
-  <div class="ad-unit pub_300x250"></div>
-  <div class="ad-placement" data-revive-zoneid="1"></div>
-  <div class="advertising-notice"></div>
+  <!-- CONTENIDO PERMITIDO (solo cuando no hay bloqueador) -->
+  <div id="accessGranted" style="display: none;">
+    <div class="access-container">
+      <div class="icon granted">✓</div>
+      <h1 class="granted">VERIFICACIÓN EXITOSA</h1>
+      <p>Redirigiendo al contenido en <span id="countdown">3</span> segundos...</p>
+      
+      <div style="margin: 30px 0;">
+        <div style="height: 4px; background: #eee; border-radius: 2px; overflow: hidden;">
+          <div id="progressBar" style="height: 100%; background: #2ecc71; width: 0%; transition: width 1s;"></div>
+        </div>
+      </div>
+      
+      <p>Si la redirección no funciona, haz clic en el botón:</p>
+      <a href="#" id="directLink" class="btn btn-success">Acceder ahora al contenido</a>
+      
+      <p style="font-size: 14px; color: #666; margin-top: 20px;">
+        <small>Esta verificación previene el uso de herramientas automatizadas.</small>
+      </p>
+    </div>
+  </div>
   
-  <!-- Trampa especial para AdBlock Plus -->
-  <div id="ad-wrapper" class="_ap_apex_ad"></div>
+  <!-- =========================================== -->
+  <!-- ZONA DE DETECCIÓN AVANZADA - NO VISIBLE -->
+  <!-- =========================================== -->
   
-  <!-- Scripts falsos que los bloqueadores interceptan -->
-  <script data-adblockdetector="true">
-    // Este script se bloquea normalmente
-    var fakeAdScript = document.createElement('script');
-    fakeAdScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
-    fakeAdScript.async = true;
-    fakeAdScript.onerror = function() {
-      window.adBlockDetected = true;
+  <!-- Detectores de nivel 1 (los más obvios) -->
+  <div id="adBlockDetector1" class="adsbygoogle-special"></div>
+  <div id="adBlockDetector2" class="ad-sensor-frame"></div>
+  <div id="adBlockDetector3" class="google-auto-placed"></div>
+  
+  <!-- Detectores de nivel 2 (menos obvios) -->
+  <div class="_ap_apex_ad_sensor" data-adblock="sensor"></div>
+  <div class="pub_300x250_sensor"></div>
+  <div class="ad-placement-sensor"></div>
+  <div data-adsbygoogle-status="sensor"></div>
+  <div id="div-gpt-ad-sensor"></div>
+  <div id="carbonads-sensor"></div>
+  <div class="ads-system-sensor"></div>
+  
+  <!-- iframe que los bloqueadores atacan -->
+  <iframe id="adIframeSensor" src="about:blank" style="display: block; width: 1px; height: 1px; position: absolute; top: -9999px;"></iframe>
+  
+  <!-- Script de ads falso -->
+  <script data-adblock-detector="true">
+    // Este script será bloqueado por adblockers
+    var adScript = document.createElement('script');
+    adScript.src = 'https://securepubads.g.doubleclick.net/tag/js/gpt.js';
+    adScript.onerror = function() {
+      window.adBlockErrorDetected = true;
     };
-    document.head.appendChild(fakeAdScript);
+    document.head.appendChild(adScript);
   </script>
 
-  <!-- ============================================= -->
-  <!-- SCRIPT PRINCIPAL DE DETECCIÓN -->
-  <!-- ============================================= -->
+  <!-- =========================================== -->
+  <!-- SCRIPT PRINCIPAL - NO MODIFICAR -->
+  <!-- =========================================== -->
   <script>
-    // Variables de control
-    let adblockDetected = false;
-    let detectionAttempts = 0;
-    const maxAttempts = 3;
+    // CONFIGURACIÓN
+    const REDIRECT_URL = "https://devuploads.com/nvgoz9e9zjag";
+    let accessGranted = false;
+    let verificationInProgress = false;
     
-    // ENLACE REAL (cámbialo si es necesario)
-    const redirectUrl = "https://devuploads.com/nvgoz9e9zjag";
-    
-    // MÉTODO 1: Detección por fetch de recursos bloqueados
-    function detectByResourceBlocking() {
-      const adResources = [
-        'https://www.googletagmanager.com/gtag/js',
-        'https://www.google-analytics.com/analytics.js',
-        'https://connect.facebook.net/en_US/fbevents.js',
-        'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
-        'https://static.ads-twitter.com/uwt.js'
-      ];
-      
-      let blockedCount = 0;
-      let checked = 0;
-      
-      adResources.forEach(url => {
-        fetch(url, {
-          method: 'HEAD',
-          mode: 'no-cors',
-          cache: 'no-store'
-        })
-        .then(response => {
-          checked++;
-        })
-        .catch(error => {
-          blockedCount++;
-          checked++;
-        });
-      });
-      
-      // Esperar un momento para las respuestas
-      return new Promise(resolve => {
-        setTimeout(() => {
-          // Si más de la mitad están bloqueados, probablemente hay adblock
-          resolve(blockedCount > adResources.length / 2);
-        }, 1000);
-      });
-    }
-    
-    // MÉTODO 2: Detección por comportamiento de elementos
-    function detectByElementBehavior() {
-      // Crear un elemento que parezca un anuncio
-      const bait = document.createElement('div');
-      bait.id = 'ads-bait-' + Date.now();
-      bait.className = 'adsbygoogle ad-unit pub_300x250';
-      bait.style.cssText = 'width: 300px; height: 250px; position: absolute; top: -9999px; left: -9999px;';
-      bait.innerHTML = '<ins class="adsbygoogle" style="display:block;"></ins>';
-      
-      document.body.appendChild(bait);
-      
-      // Verificar si fue modificado/ocultado
-      return new Promise(resolve => {
-        setTimeout(() => {
-          const style = window.getComputedStyle(bait);
-          const isHidden = (
-            bait.offsetHeight === 0 ||
-            bait.offsetWidth === 0 ||
-            style.display === 'none' ||
-            style.visibility === 'hidden' ||
-            style.opacity === '0' ||
-            style.height === '0px'
-          );
-          
-          // Limpiar
-          document.body.removeChild(bait);
-          resolve(isHidden);
-        }, 500);
-      });
-    }
-    
-    // MÉTODO 3: Detección por errores en scripts
-    function detectByScriptErrors() {
-      return new Promise(resolve => {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.adox.io/ads/load.js?' + Math.random();
-        script.onerror = () => {
-          resolve(true); // Error = probable bloqueo
-        };
-        script.onload = () => {
-          resolve(false); // Cargó = probablemente sin bloqueo
-        };
-        
-        // Timeout por si no hay respuesta
-        setTimeout(() => {
-          resolve(true); // Timeout = probable bloqueo
-        }, 2000);
-        
-        document.head.appendChild(script);
-        
-        // Limpiar después
-        setTimeout(() => {
-          if (script.parentNode) {
-            script.parentNode.removeChild(script);
-          }
-        }, 3000);
-      });
-    }
-    
-    // MÉTODO 4: Detección por patrones conocidos
-    function detectByPatterns() {
-      // Verificar si hay variables globales de adblockers
-      const adblockVars = [
-        'blockAdBlock',
-        'sniffAdBlock',
-        'adblock',
-        'uBlock',
-        'adguard'
+    // ===========================================
+    // MÉTODO 1: Detección por modificación de estilos
+    // ===========================================
+    function detectByStyleTampering() {
+      const detectors = [
+        'adBlockDetector1',
+        'adBlockDetector2',
+        'adBlockDetector3'
       ];
       
       let detected = false;
       
-      // Buscar en el objeto window
-      adblockVars.forEach(varName => {
-        if (window[varName] !== undefined) {
-          detected = true;
-        }
-      });
-      
-      // Verificar si hay listeners de eventos de adblock
-      if (typeof EventTarget !== 'undefined') {
-        const originalAddEventListener = EventTarget.prototype.addEventListener;
-        EventTarget.prototype.addEventListener = function(type) {
-          if (type && type.toString().toLowerCase().includes('ad')) {
+      detectors.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          const style = window.getComputedStyle(element);
+          
+          // Verificar si el bloqueador modificó los estilos
+          if (style.display === 'none' ||
+              style.visibility === 'hidden' ||
+              style.opacity === '0' ||
+              style.height === '0px' ||
+              element.offsetHeight === 0 ||
+              element.offsetWidth === 0) {
             detected = true;
           }
-          return originalAddEventListener.apply(this, arguments);
-        };
-      }
+          
+          // Verificar si tiene estilos inline añadidos
+          if (element.style.cssText.includes('none') ||
+              element.style.cssText.includes('hidden') ||
+              element.style.cssText.includes('0px')) {
+            detected = true;
+          }
+        }
+      });
       
       return detected;
     }
     
-    // FUNCIÓN PRINCIPAL DE DETECCIÓN
-    async function performAdblockDetection() {
-      detectionAttempts++;
-      
-      // Ejecutar todos los métodos en paralelo
-      const results = await Promise.all([
-        detectByResourceBlocking(),
-        detectByElementBehavior(),
-        detectByScriptErrors(),
-        Promise.resolve(detectByPatterns())
-      ]);
-      
-      // Si la mayoría de métodos detectan adblock
-      const trueCount = results.filter(r => r === true).length;
-      adblockDetected = trueCount >= 2; // 2 o más métodos positivos
-      
-      console.log('Detección #' + detectionAttempts + ' - Resultados:', results, 'Adblock detectado:', adblockDetected);
-      
-      // Mostrar el contenido adecuado
-      showAppropriateContent();
-      
-      // Si después de varios intentos no detecta pero queremos ser estrictos
-      if (detectionAttempts >= maxAttempts && !adblockDetected) {
-        // Última verificación: forzar detección con método más agresivo
-        const forcedCheck = await detectByElementBehavior();
-        if (forcedCheck) {
-          adblockDetected = true;
-          showAppropriateContent();
+    // ===========================================
+    // MÉTODO 2: Detección por bloqueo de recursos
+    // ===========================================
+    function detectByResourceBlocking() {
+      return new Promise((resolve) => {
+        let blockedCount = 0;
+        let totalChecks = 0;
+        
+        // Lista de recursos que los bloqueadores suelen bloquear
+        const resources = [
+          'https://www.googletagservices.com/tag/js/gpt.js',
+          'https://www.google-analytics.com/analytics.js',
+          'https://connect.facebook.net/signals/config/123456',
+          'https://bat.bing.com/bat.js',
+          'https://static.ads-twitter.com/uwt.js',
+          'https://www.googleadservices.com/pagead/conversion.js',
+          'https://cdn.adox.io/ads/load.js'
+        ];
+        
+        resources.forEach(url => {
+          totalChecks++;
+          const img = new Image();
+          img.onerror = () => {
+            blockedCount++;
+            checkCompletion();
+          };
+          img.onload = () => {
+            checkCompletion();
+          };
+          
+          // Timeout por si el bloqueador simplemente ignora
+          setTimeout(() => {
+            // Si no hay respuesta, asumimos bloqueo
+            if (!img.complete) {
+              blockedCount++;
+              checkCompletion();
+            }
+          }, 1000);
+          
+          img.src = url + '?t=' + Date.now();
+        });
+        
+        function checkCompletion() {
+          if (--totalChecks === 0) {
+            // Si más del 60% están bloqueados, hay adblock
+            resolve(blockedCount >= resources.length * 0.6);
+          }
         }
-      }
+      });
     }
     
-    // MOSTRAR CONTENIDO SEGÚN DETECCIÓN
-    function showAppropriateContent() {
-      if (adblockDetected) {
-        // MOSTRAR MENSAJE DE BLOQUEO
-        document.getElementById('normalAccess').style.display = 'none';
-        document.getElementById('blockedAccess').style.display = 'block';
-        
-        // Detener cualquier redirección pendiente
-        clearTimeout(window.redirectTimeout);
-      } else {
-        // PERMITIR ACCESO
-        document.getElementById('normalAccess').style.display = 'block';
-        document.getElementById('blockedAccess').style.display = 'none';
-        
-        // Configurar redirección
-        setupRedirect();
-      }
-    }
-    
-    // CONFIGURAR REDIRECCIÓN
-    function setupRedirect() {
-      const countdownEl = document.getElementById('countdown');
-      const directLink = document.getElementById('directLink');
+    // ===========================================
+    // MÉTODO 3: Detección por patrones en window
+    // ===========================================
+    function detectByWindowPatterns() {
+      let detected = false;
       
-      // Configurar enlace
-      if (directLink) {
-        directLink.href = redirectUrl;
-        directLink.onclick = function(e) {
-          e.preventDefault();
-          window.location.href = redirectUrl;
+      // Patrones de nombres que usan los bloqueadores
+      const patterns = [
+        /adblock/gi,
+        /ublock/gi,
+        /adguard/gi,
+        /privacy.*badger/gi,
+        /ghostery/gi,
+        /disconnect/gi,
+        /no.*script/gi
+      ];
+      
+      // Revisar todas las propiedades de window
+      for (let key in window) {
+        patterns.forEach(pattern => {
+          if (pattern.test(key)) {
+            detected = true;
+          }
+        });
+      }
+      
+      // Verificar si hay listeners de adblock
+      try {
+        const originalAdd = EventTarget.prototype.addEventListener;
+        EventTarget.prototype.addEventListener = function(type) {
+          if (type && typeof type === 'string' && type.toLowerCase().includes('ad')) {
+            detected = true;
+          }
+          return originalAdd.apply(this, arguments);
         };
+      } catch (e) {}
+      
+      return detected;
+    }
+    
+    // ===========================================
+    // MÉTODO 4: Detección por tiempo de carga
+    // ===========================================
+    function detectByLoadTime() {
+      return new Promise((resolve) => {
+        const start = performance.now();
+        
+        // Cargar un script de ads falso
+        const script = document.createElement('script');
+        script.src = 'https://ads.example.com/fake-ad.js?' + Date.now();
+        
+        const timeout = setTimeout(() => {
+          // Timeout = probablemente bloqueado
+          resolve(true);
+        }, 500);
+        
+        script.onerror = () => {
+          clearTimeout(timeout);
+          resolve(true); // Error = bloqueado
+        };
+        
+        script.onload = () => {
+          clearTimeout(timeout);
+          const time = performance.now() - start;
+          // Si carga muy rápido (caché del bloqueador) o muy lento (bloqueado)
+          resolve(time < 10 || time > 1000);
+        };
+        
+        document.head.appendChild(script);
+        
+        // Limpiar
+        setTimeout(() => {
+          if (script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
+        }, 2000);
+      });
+    }
+    
+    // ===========================================
+    // VERIFICACIÓN PRINCIPAL
+    // ===========================================
+    async function performVerification() {
+      if (verificationInProgress) return;
+      verificationInProgress = true;
+      
+      try {
+        // Ejecutar todas las verificaciones en paralelo
+        const results = await Promise.all([
+          Promise.resolve(detectByStyleTampering()),
+          detectByResourceBlocking(),
+          Promise.resolve(detectByWindowPatterns()),
+          detectByLoadTime()
+        ]);
+        
+        // Contar cuántas detecciones positivas
+        const positiveDetections = results.filter(r => r === true).length;
+        
+        console.log('Resultados de verificación:', results);
+        console.log('Detecciones positivas:', positiveDetections);
+        
+        // REGLA PRINCIPAL: Si CUALQUIERA de los métodos detecta, BLOQUEAR
+        // O si queremos ser más estrictos: si 2 o más detectan, bloquear
+        const shouldBlock = positiveDetections >= 1; // Cambia a 2 si quieres menos estricto
+        
+        if (shouldBlock) {
+          // BLOQUEAR ACCESO
+          accessGranted = false;
+          showAccessDenied();
+        } else {
+          // PERMITIR ACCESO
+          accessGranted = true;
+          showAccessGranted();
+        }
+        
+      } catch (error) {
+        console.error('Error en verificación:', error);
+        // En caso de error, bloquear por seguridad
+        accessGranted = false;
+        showAccessDenied();
+      } finally {
+        verificationInProgress = false;
+      }
+    }
+    
+    // ===========================================
+    // MOSTRAR CONTENIDO BLOQUEADO
+    // ===========================================
+    function showAccessDenied() {
+      // Marcar body como no verificado
+      document.body.className = '';
+      
+      // Mostrar mensaje de denegado
+      document.getElementById('accessDenied').style.display = 'block';
+      document.getElementById('accessGranted').style.display = 'none';
+      
+      // Generar código de error único
+      const errorCode = 'BLOCK_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      document.getElementById('errorCode').textContent = errorCode;
+      
+      // Detener cualquier redirección pendiente
+      clearTimeout(window.redirectTimeout);
+      clearInterval(window.countdownInterval);
+    }
+    
+    // ===========================================
+    // MOSTRAR CONTENIDO PERMITIDO
+    // ===========================================
+    function showAccessGranted() {
+      // Marcar body como verificado
+      document.body.className = 'verified';
+      
+      // Mostrar contenido de acceso
+      document.getElementById('accessDenied').style.display = 'none';
+      document.getElementById('accessGranted').style.display = 'block';
+      
+      // Configurar enlace directo
+      const directLink = document.getElementById('directLink');
+      if (directLink) {
+        directLink.href = REDIRECT_URL;
+        directLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.location.href = REDIRECT_URL;
+        });
       }
       
-      // Contador regresivo
-      let seconds = 5;
-      const countdownInterval = setInterval(() => {
+      // Iniciar cuenta regresiva
+      let seconds = 3;
+      const countdownEl = document.getElementById('countdown');
+      const progressBar = document.getElementById('progressBar');
+      
+      if (countdownEl) countdownEl.textContent = seconds;
+      if (progressBar) progressBar.style.width = '0%';
+      
+      // Actualizar cada segundo
+      window.countdownInterval = setInterval(() => {
         seconds--;
+        
         if (countdownEl) countdownEl.textContent = seconds;
+        if (progressBar) {
+          const progress = ((3 - seconds) / 3) * 100;
+          progressBar.style.width = progress + '%';
+        }
         
         if (seconds <= 0) {
-          clearInterval(countdownInterval);
-          window.location.href = redirectUrl;
+          clearInterval(window.countdownInterval);
+          window.location.href = REDIRECT_URL;
         }
       }, 1000);
       
-      // Guardar referencia para poder cancelar
+      // Redirección de respaldo
       window.redirectTimeout = setTimeout(() => {
-        window.location.href = redirectUrl;
-      }, 5000);
+        window.location.href = REDIRECT_URL;
+      }, 4000);
     }
     
-    // ACCESO FORZADO (para usuarios que insisten)
-    document.getElementById('forceAccess').addEventListener('click', function() {
-      if (confirm("⚠️ Acceso forzado activado. El contenido puede no funcionar correctamente con bloqueadores activos. ¿Continuar?")) {
-        adblockDetected = false;
-        showAppropriateContent();
-      }
-    });
+    // ===========================================
+    // REINTENTO FORZADO
+    // ===========================================
+    function forceRetry() {
+      // Mostrar mensaje de carga
+      alert('Realizando verificación profunda...\nPor favor, asegúrate de haber desactivado todos los bloqueadores.');
+      
+      // Forzar recarga de caché
+      const cacheBuster = '?force=' + Date.now();
+      window.location.search = cacheBuster;
+    }
     
+    // ===========================================
     // INICIALIZACIÓN
+    // ===========================================
     document.addEventListener('DOMContentLoaded', function() {
       // Ocultar todo inicialmente
-      document.getElementById('normalAccess').style.display = 'none';
-      document.getElementById('blockedAccess').style.display = 'none';
+      document.getElementById('accessDenied').style.display = 'none';
+      document.getElementById('accessGranted').style.display = 'none';
       
-      // Iniciar detección después de un breve retraso
+      // Esperar a que el bloqueador actúe (si existe)
       setTimeout(() => {
-        performAdblockDetection();
-      }, 1500);
+        performVerification();
+      }, 2000);
       
-      // Monitoreo continuo
+      // Verificación periódica
       setInterval(() => {
-        if (!adblockDetected) {
-          performAdblockDetection();
+        if (!accessGranted) {
+          performVerification();
         }
       }, 10000);
       
-      // También detectar cambios dinámicos
+      // Detectar cambios en el DOM (bloqueadores dinámicos)
       const observer = new MutationObserver(() => {
-        if (!adblockDetected) {
-          performAdblockDetection();
+        if (!accessGranted) {
+          performVerification();
         }
       });
       
       observer.observe(document.body, {
         childList: true,
         subtree: true,
-        attributes: true
+        attributes: true,
+        attributeFilter: ['style', 'class', 'id']
+      });
+      
+      // Bloquear teclas de desarrollador cuando está bloqueado
+      document.addEventListener('keydown', function(e) {
+        if (!accessGranted && (
+          e.key === 'F12' ||
+          (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+          (e.ctrlKey && e.shiftKey && e.key === 'J') ||
+          (e.ctrlKey && e.key === 'U')
+        )) {
+          e.preventDefault();
+          alert('⚠️ Desactiva el bloqueador de anuncios para acceder a las herramientas de desarrollo.');
+          return false;
+        }
       });
     });
     
-    // Detectar si el usuario intenta inspeccionar elementos
+    // Bloquear clic derecho cuando está bloqueado
     document.addEventListener('contextmenu', function(e) {
-      if (adblockDetected) {
+      if (!accessGranted) {
         e.preventDefault();
+        alert('⚠️ Desactiva el bloqueador de anuncios para habilitar el menú contextual.');
         return false;
       }
     });
     
-    // Detectar teclas de desarrollador (F12, Ctrl+Shift+I)
-    document.addEventListener('keydown', function(e) {
-      if (adblockDetected && (
-        e.key === 'F12' ||
-        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-        (e.ctrlKey && e.shiftKey && e.key === 'J') ||
-        (e.ctrlKey && e.key === 'U')
-      )) {
-        e.preventDefault();
-        alert('Por favor, desactiva el bloqueador de anuncios antes de usar herramientas de desarrollador.');
-        return false;
+    // Verificar al hacer focus (por si cambian extensiones)
+    window.addEventListener('focus', function() {
+      if (!accessGranted) {
+        setTimeout(() => {
+          performVerification();
+        }, 1000);
       }
     });
   </script>
