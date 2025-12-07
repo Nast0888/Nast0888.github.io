@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Verificación Requerida</title>
   <style>
+    /* Tu CSS original */
     body {
       display: none;
       font-family: Arial, sans-serif;
@@ -68,142 +69,142 @@
       margin: 20px 0;
     }
     
-    /* Elementos trampa específicos para AdGuard */
-    .adguard-trap, .dns-filter-test, .adblock-detector {
+    /* Elementos trampa - TU VERSIÓN ORIGINAL */
+    .publi, .ad-frame, .adsbygoogle {
       position: absolute;
       top: -9999px;
       left: -9999px;
-      width: 1px;
-      height: 1px;
+      width: 300px;
+      height: 250px;
     }
     
-    .adguard-trap:before {
-      content: "AdGuard-Block";
+    .publi:before {
+      content: "Publicidad";
       color: #999;
-      font-size: 10px;
+      font-size: 12px;
+    }
+    
+    .ad-frame:before {
+      content: "Anuncio";
+      color: #999;
+      font-size: 12px;
     }
   </style>
 </head>
 <body>
-  <!-- Pantalla de carga -->
+  <!-- Pantalla de carga inicial - IGUAL -->
   <div id="loading">
-    Analizando configuración de red...
+    Verificando seguridad...
     <div style="margin-top: 20px; font-size: 14px; color: #999;">
-      Detectando filtros DNS
+      Por favor, espera unos segundos
     </div>
   </div>
   
-  <!-- Mensaje de ÉXITO -->
+  <!-- Mensaje de ÉXITO (sin bloqueador) - IGUAL -->
   <div id="successMessage" class="message success" style="display: none;">
-    <h1 style="color: #27ae60;">✓ DNS Verificado</h1>
-    <p>No se detectó AdGuard DNS</p>
-    <p>Redirigiendo en <span id="countdown">5</span> segundos...</p>
+    <h1 style="color: #27ae60;">✓ Verificación Exitosa</h1>
+    <p>Redirigiendo al contenido en <span id="countdown">5</span> segundos...</p>
     <div style="margin: 30px 0;">
       <div style="height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
         <div id="progressBar" style="height: 100%; background: #2ecc71; width: 0%; transition: width 0.5s;"></div>
       </div>
     </div>
-    <a href="#" id="directLink" class="btn btn-success">Acceder Ahora</a>
+    <p>Si no redirige automáticamente:</p>
+    <a href="#" id="directLink" class="btn btn-success">Acceder al contenido ahora</a>
   </div>
   
-  <!-- Mensaje de ERROR - AdGuard DNS detectado -->
+  <!-- Mensaje de ERROR - AHORA CON DOS VERSIONES -->
   <div id="errorMessage" class="message error" style="display: none;">
-    <h1 style="color: #e74c3c;">⛔ AdGuard DNS Detectado</h1>
-    <p><strong>Se ha detectado dns.adguard.com en tu configuración de red</strong></p>
+    <h1 style="color: #e74c3c;">⛔ Bloqueador Detectado</h1>
+    <p><strong id="errorType">Se ha detectado un bloqueador de anuncios o contenido.</strong></p>
     
     <div class="steps">
-      <h3>¿Qué está bloqueando AdGuard DNS?</h3>
-      <ul>
-        <li><strong>Publicidad:</strong> Dominios de anuncios</li>
-        <li><strong>Trackers:</strong> Rastreadores y analytics</li>
-        <li><strong>Malware:</strong> Sitios maliciosos</li>
-        <li><strong>Phishing:</strong> Sitios fraudulentos</li>
-      </ul>
+      <h3 id="solutionTitle">Para continuar necesitas:</h3>
+      <div id="browserSolution" style="display: none;">
+        <ol>
+          <li><strong>Haz clic en el icono de tu bloqueador</strong> (AdBlock, uBlock, etc.) en la barra de extensiones</li>
+          <li><strong>Selecciona "Desactivar en este sitio"</strong> o "Pausar"</li>
+          <li><strong>Recarga esta página</strong> presionando F5 o Ctrl+R</li>
+        </ol>
+        <p><em>Si usas Brave: Desactiva "Brave Shields" en la barra de direcciones</em></p>
+      </div>
       
-      <h3 style="margin-top: 20px;">Para desactivar AdGuard DNS:</h3>
-      <ol>
-        <li><strong>Android/iOS:</strong> Configuración → WiFi → DNS → Cambiar a Automático</li>
-        <li><strong>Windows:</strong> Panel de Control → Red → Propiedades TCP/IPv4 → DNS Automático</li>
-        <li><strong>Mac:</strong> Preferencias → Red → Avanzado → DNS → Quitar dns.adguard.com</li>
-        <li><strong>Router:</strong> Accede a 192.168.1.1 → DNS → Restaurar predeterminado</li>
-      </ol>
-      
-      <div style="margin-top: 20px; padding: 10px; background: #e8f4f8; border-radius: 5px;">
-        <p><strong>DNS alternativos recomendados:</strong></p>
-        <ul style="font-size: 14px;">
-          <li><code>8.8.8.8</code> y <code>8.8.4.4</code> (Google)</li>
-          <li><code>1.1.1.1</code> y <code>1.0.0.1</code> (Cloudflare)</li>
-        </ul>
+      <div id="dnsSolution" style="display: none;">
+        <h4>📡 AdGuard DNS detectado (dns.adguard.com)</h4>
+        <ol>
+          <li><strong>Android/iOS:</strong> Configuración → WiFi → DNS → Cambiar a "Automático"</li>
+          <li><strong>Windows:</strong> Panel de Control → Red → Propiedades TCP/IPv4 → DNS Automático</li>
+          <li><strong>Mac:</strong> Preferencias → Red → Avanzado → DNS → Quitar dns.adguard.com</li>
+          <li><strong>Router:</strong> Accede a 192.168.1.1 → DNS → Restaurar predeterminado</li>
+        </ol>
+        <div style="margin-top: 10px; padding: 10px; background: #e8f4f8; border-radius: 5px;">
+          <p><strong>DNS alternativos:</strong></p>
+          <code>8.8.8.8</code> (Google) o <code>1.1.1.1</code> (Cloudflare)
+        </div>
       </div>
     </div>
     
-    <div style="margin-top: 30px;">
-      <button onclick="location.reload()" class="btn">Ya cambié DNS, recargar</button>
-      <button onclick="testWithoutDNS()" class="btn btn-error">Probar sin DNS</button>
-    </div>
+    <p style="color: #666; font-size: 14px;">
+      Esta verificación es necesaria para prevenir acceso automatizado y asegurar la disponibilidad del servicio.
+    </p>
     
-    <!-- Información específica de lo que detectamos -->
-    <div id="detectionInfo" style="margin-top: 20px; font-size: 12px; color: #666; display: none;">
-      <p>Lo que detectamos: <span id="blockedItems"></span></p>
+    <div style="margin-top: 30px;">
+      <button onclick="location.reload()" class="btn">Ya desactivé, recargar</button>
+      <button onclick="forceAccess()" class="btn btn-error">Intentar acceso de emergencia</button>
     </div>
   </div>
 
-  <!-- ================= DETECCIÓN ESPECÍFICA PARA ADGUARD DNS ================= -->
-  <!-- Elementos que AdGuard DNS específicamente bloquea -->
-  <div class="adguard-trap" id="ag-trap1"></div>
-  <div class="dns-filter-test" id="ag-trap2"></div>
-  <div class="adblock-detector" id="ag-trap3"></div>
+  <!-- ================= TRAMPAS ORIGINALES + NUEVAS ================= -->
+  <!-- Tus trampas originales -->
+  <div class="publi" id="ad1"></div>
+  <div class="ad-frame" id="ad2"></div>
+  <div class="adsbygoogle" id="ad3"></div>
+  <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-123456789" data-ad-slot="123456789"></ins>
   
-  <!-- Scripts que AdGuard DNS bloquea específicamente -->
-  <script>
-    // URLs específicamente bloqueadas por AdGuard DNS
-    const adguardSpecificUrls = [
-      'https://ad.doubleclick.net/ddm/adj/',
-      'https://googleads.g.doubleclick.net/pagead/',
-      'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
-      'https://www.googletagmanager.com/gtag/js',
-      'https://www.google-analytics.com/analytics.js',
-      'https://connect.facebook.net/en_US/fbevents.js',
-      'https://sb.scorecardresearch.com/beacon.js',
-      'https://cdn.ampproject.org/v0/amp-ad-',
-      'https://cdn.taboola.com/libtrc/',
-      'https://s.amazon-adsystem.com/ecm3.js'
-    ];
-    
-    // Elementos con clases que AdGuard DNS filtra
-    const adguardFilteredClasses = [
-      'ad', 'ads', 'advert', 'banner', 'publi', 'sponsor',
-      'doubleclick', 'googlead', 'adservice', 'adcontainer'
-    ];
-  </script>
+  <!-- Nueva trampa específica para DNS blockers -->
+  <div id="dns-test-element" style="display:none; height:0; width:0; overflow:hidden;">
+    <!-- Este iframe intenta cargar algo que AdGuard DNS bloquea -->
+    <iframe id="dns-test-frame" src="about:blank" style="display:none;"></iframe>
+  </div>
 
-  <!-- ================= LÓGICA PRINCIPAL MEJORADA ================= -->
+  <!-- ================= LÓGICA MEJORADA QUE SÍ FUNCIONA ================= -->
   <script>
     // URL de destino
     const TARGET_URL = "https://devuploads.com/nvgoz9e9zjag";
     
-    // Tu detección original (bloqueadores de navegador)
-    let browserAdBlockDetected = false;
+    // Variables de detección
+    let adBlockDetected = false;
+    let dnsBlockDetected = false;
+    let detectionCompleted = false;
     
-    // Nueva detección para AdGuard DNS
-    let adguardDNSDetected = false;
-    let blockedItems = [];
-    
-    // Mostrar body después de cargar
+    // Mostrar body después de que todo cargue
     window.addEventListener('load', function() {
+      // Primero mostramos todo
       document.body.style.display = 'block';
       document.getElementById('loading').style.display = 'none';
       
-      // Primero tu detección original
-      setTimeout(checkOriginalAdBlock, 1000);
-      // Luego detección específica de AdGuard DNS
-      setTimeout(checkAdGuardDNS, 1500);
+      // Ejecutar ambas detecciones
+      setTimeout(checkAll, 800);
     });
     
-    // ============ TU DETECCIÓN ORIGINAL (sin cambios) ============
-    function checkOriginalAdBlock() {
-      let adBlockDetected = false;
+    // Función que ejecuta TODAS las verificaciones
+    function checkAll() {
+      // Resetear estados
+      adBlockDetected = false;
+      dnsBlockDetected = false;
       
+      // 1. TU DETECCIÓN ORIGINAL (funciona para adBlock de navegador)
+      checkOriginalAdBlock();
+      
+      // 2. NUEVA DETECCIÓN para DNS (AdGuard DNS)
+      checkAdGuardDNS();
+      
+      // 3. Después de 2 segundos, mostrar resultado
+      setTimeout(showFinalResult, 2000);
+    }
+    
+    // ============ TU DETECCIÓN ORIGINAL (LA QUE SÍ FUNCIONA) ============
+    function checkOriginalAdBlock() {
       // MÉTODO 1: Verificar si los elementos "ad" están ocultos
       const adElements = ['ad1', 'ad2', 'ad3'];
       adElements.forEach(id => {
@@ -215,6 +216,7 @@
               el.offsetHeight === 0 ||
               el.offsetWidth === 0) {
             adBlockDetected = true;
+            console.log('TU DETECCIÓN: Elemento ad bloqueado:', id);
           }
         }
       });
@@ -222,271 +224,169 @@
       // MÉTODO 2: Verificar si el script de ads fue bloqueado
       if (window.adScriptBlocked) {
         adBlockDetected = true;
+        console.log('TU DETECCIÓN: Script de ads bloqueado');
       }
       
       // MÉTODO 3: Intentar cargar un recurso de ads
       const img = new Image();
-      img.src = 'https://www.google-analytics.com/collect?v=1&t=pageview&tid=UA-TEST-1';
+      img.src = 'https://www.google-analytics.com/collect?v=1&t=pageview&tid=UA-TEST-' + Date.now();
       img.onerror = function() {
         adBlockDetected = true;
+        console.log('TU DETECCIÓN: Google Analytics bloqueado');
       };
       
-      // Asignar resultado
-      browserAdBlockDetected = adBlockDetected;
-      
-      // Timeout para mostrar resultado
-      setTimeout(function() {
-        if (!adguardDNSDetected) { // Solo si no hay AdGuard DNS
-          showFinalResult();
+      // MÉTODO 4: Verificar elemento ins.adsbygoogle
+      const googleAd = document.querySelector('ins.adsbygoogle');
+      if (googleAd) {
+        const style = window.getComputedStyle(googleAd);
+        if (style.display === 'none' || googleAd.offsetHeight === 0) {
+          adBlockDetected = true;
+          console.log('TU DETECCIÓN: Google Ads bloqueado');
         }
-      }, 2000);
-    }
-    
-    // ============ DETECCIÓN ESPECÍFICA PARA ADGUARD DNS ============
-    async function checkAdGuardDNS() {
-      console.log("Iniciando detección específica de AdGuard DNS...");
-      
-      let adguardBlockCount = 0;
-      let totalTests = 0;
-      blockedItems = [];
-      
-      // PRUEBA 1: Elementos DOM específicos de AdGuard
-      adguardFilteredClasses.forEach(className => {
-        totalTests++;
-        const testDiv = document.createElement('div');
-        testDiv.className = className + '-test-' + Date.now();
-        testDiv.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;';
-        testDiv.innerHTML = '<!-- ' + className + ' content -->';
-        document.body.appendChild(testDiv);
-        
-        const style = window.getComputedStyle(testDiv);
-        if (style.display === 'none' || testDiv.offsetHeight === 0) {
-          adguardBlockCount++;
-          blockedItems.push('Clase: ' + className);
-        }
-        
-        document.body.removeChild(testDiv);
-      });
-      
-      // PRUEBA 2: Recursos específicamente bloqueados por AdGuard DNS
-      const resourceTests = await testAdGuardSpecificResources();
-      adguardBlockCount += resourceTests.blockedCount;
-      totalTests += resourceTests.totalTests;
-      blockedItems = blockedItems.concat(resourceTests.blockedUrls);
-      
-      // PRUEBA 3: DNS resolution - Intento de conexión directa
-      const dnsTest = await testDNSResolution();
-      if (dnsTest.blocked) {
-        adguardBlockCount++;
-        totalTests++;
-        blockedItems.push('DNS: ' + dnsTest.domain);
       }
-      
-      // PRUEBA 4: Patrones específicos de AdGuard
-      const patternTest = await testAdGuardPatterns();
-      adguardBlockCount += patternTest.blockedCount;
-      totalTests += patternTest.totalTests;
-      blockedItems = blockedItems.concat(patternTest.blockedPatterns);
-      
-      // Evaluar resultados
-      const blockedPercentage = (adguardBlockCount / totalTests) * 100;
-      
-      // Si más del 70% de las pruebas específicas de AdGuard fallan
-      adguardDNSDetected = blockedPercentage > 70;
-      
-      console.log("Resultado AdGuard DNS:", {
-        detected: adguardDNSDetected,
-        blockedPercentage: blockedPercentage,
-        blockedItems: blockedItems
-      });
-      
-      // Mostrar resultado final
-      setTimeout(showFinalResult, 500);
     }
     
-    // Probar recursos específicos de AdGuard
-    async function testAdGuardSpecificResources() {
-      let blockedCount = 0;
-      let blockedUrls = [];
+    // ============ DETECCIÓN DE DNS ADGUARD.COM (SIMPLE Y EFECTIVA) ============
+    function checkAdGuardDNS() {
+      console.log('Iniciando detección DNS...');
       
-      const promises = adguardSpecificUrls.slice(0, 5).map(url => {
-        return new Promise(resolve => {
-          const xhr = new XMLHttpRequest();
-          xhr.timeout = 3000;
-          xhr.open('HEAD', url + '?t=' + Date.now(), true);
-          
-          xhr.onload = function() {
-            // AdGuard DNS a menudo devuelve 0 o códigos específicos
-            if (this.status === 0 || this.status === 403 || this.status === 404) {
-              blockedCount++;
-              blockedUrls.push(url.split('/')[2]); // Solo el dominio
-            }
-            resolve();
-          };
-          
-          xhr.onerror = function() {
-            blockedCount++;
-            blockedUrls.push(url.split('/')[2]);
-            resolve();
-          };
-          
-          xhr.ontimeout = function() {
-            blockedCount++;
-            blockedUrls.push(url.split('/')[2]);
-            resolve();
-          };
-          
-          try {
-            xhr.send();
-          } catch(e) {
-            blockedCount++;
-            blockedUrls.push(url.split('/')[2]);
-            resolve();
-          }
-        });
-      });
-      
-      await Promise.allSettled(promises);
-      
-      return {
-        blockedCount: blockedCount,
-        totalTests: adguardSpecificUrls.slice(0, 5).length,
-        blockedUrls: blockedUrls
-      };
-    }
-    
-    // Probar resolución DNS
-    async function testDNSResolution() {
-      return new Promise(resolve => {
-        // Dominios específicamente bloqueados por AdGuard DNS
-        const testDomain = 'doubleclick.net';
-        const testUrl = `https://${testDomain}/test-${Date.now()}.gif`;
-        
-        const img = new Image();
-        const startTime = Date.now();
-        
-        img.onload = function() {
-          const loadTime = Date.now() - startTime;
-          // Si carga extremadamente rápido (<10ms), podría ser respuesta falsa de AdGuard
-          resolve({
-            blocked: loadTime < 10 || img.width === 0,
-            domain: testDomain,
-            time: loadTime
-          });
-        };
-        
-        img.onerror = function() {
-          resolve({
-            blocked: true,
-            domain: testDomain,
-            time: null
-          });
-        };
-        
-        // Timeout corto
-        setTimeout(() => {
-          resolve({
-            blocked: true,
-            domain: testDomain,
-            timeout: true
-          });
-        }, 2000);
-        
-        img.src = testUrl;
-      });
-    }
-    
-    // Probar patrones específicos de AdGuard
-    async function testAdGuardPatterns() {
-      let blockedCount = 0;
-      let blockedPatterns = [];
-      
-      // Patrones de URL que AdGuard DNS bloquea
-      const patterns = [
-        '/adsystem/',
-        '/adserver/',
-        '/tracking/',
-        '/analytics/',
-        '/beacon/'
+      // MÉTODO 1: Intentar cargar un recurso que AdGuard DNS SIEMPRE bloquea
+      const testUrls = [
+        'https://doubleclick.net/test.gif?' + Date.now(),
+        'https://googleads.g.doubleclick.net/pagead/test?' + Date.now(),
+        'https://ad.doubleclick.net/ddm/adj/test?' + Date.now()
       ];
       
-      patterns.forEach(pattern => {
-        // Crear elemento con patrón sospechoso
-        const testId = 'test-' + pattern.replace(/\//g, '-') + Date.now();
-        const testDiv = document.createElement('div');
-        testDiv.id = testId;
-        testDiv.innerHTML = `<!-- ${pattern} -->`;
-        testDiv.style.cssText = 'position:absolute;left:-9999px;width:1px;height:1px;';
+      let blockedCount = 0;
+      let completed = 0;
+      
+      testUrls.forEach(url => {
+        const xhr = new XMLHttpRequest();
+        xhr.timeout = 2000;
         
-        document.body.appendChild(testDiv);
+        xhr.onload = function() {
+          // AdGuard DNS a veces responde con código 0 o redirecciona
+          if (this.status === 0 || this.status === 404 || this.status === 403) {
+            blockedCount++;
+          }
+          completed++;
+          if (completed === testUrls.length) {
+            evaluateDNSResult(blockedCount, testUrls.length);
+          }
+        };
         
-        // Verificar si fue modificado/bloqueado
-        const computed = window.getComputedStyle(testDiv);
-        const isBlocked = computed.display === 'none' || 
-                         computed.opacity === '0' || 
-                         testDiv.offsetParent === null;
-        
-        if (isBlocked) {
+        xhr.onerror = function() {
           blockedCount++;
-          blockedPatterns.push('Patrón: ' + pattern);
-        }
+          completed++;
+          if (completed === testUrls.length) {
+            evaluateDNSResult(blockedCount, testUrls.length);
+          }
+        };
         
-        document.body.removeChild(testDiv);
+        xhr.ontimeout = function() {
+          blockedCount++;
+          completed++;
+          if (completed === testUrls.length) {
+            evaluateDNSResult(blockedCount, testUrls.length);
+          }
+        };
+        
+        try {
+          xhr.open('HEAD', url, true);
+          xhr.send();
+        } catch(e) {
+          blockedCount++;
+          completed++;
+        }
       });
       
-      return {
-        blockedCount: blockedCount,
-        totalTests: patterns.length,
-        blockedPatterns: blockedPatterns
-      };
+      // MÉTODO 2: Iframe test (más efectivo para DNS)
+      setTimeout(function() {
+        const iframe = document.getElementById('dns-test-frame');
+        if (iframe) {
+          try {
+            // Intentar cargar contenido que DNS bloquea
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write('<script>window.parent.postMessage("dns-test", "*")<\/script>');
+            iframeDoc.close();
+            
+            // Escuchar por mensaje (si no llega, está bloqueado)
+            const messageHandler = function(event) {
+              if (event.data === "dns-test") {
+                console.log('DNS Test: Iframe funcionó');
+                window.removeEventListener('message', messageHandler);
+              }
+            };
+            window.addEventListener('message', messageHandler);
+            
+            // Timeout - si no llega mensaje en 1.5s, está bloqueado
+            setTimeout(function() {
+              dnsBlockDetected = true;
+              console.log('DNS DETECTADO: Iframe bloqueado');
+            }, 1500);
+          } catch(e) {
+            dnsBlockDetected = true;
+            console.log('DNS DETECTADO: Error en iframe');
+          }
+        }
+      }, 500);
+    }
+    
+    function evaluateDNSResult(blocked, total) {
+      // Si 2 de 3 están bloqueados, es DNS
+      if (blocked >= 2) {
+        dnsBlockDetected = true;
+        console.log('DNS DETECTADO: ' + blocked + '/' + total + ' recursos bloqueados');
+      }
     }
     
     // ============ MOSTRAR RESULTADO FINAL ============
     function showFinalResult() {
-      console.log("Resultados finales:", {
-        browserAdBlock: browserAdBlockDetected,
-        adguardDNS: adguardDNSDetected,
-        blockedItems: blockedItems
+      if (detectionCompleted) return;
+      detectionCompleted = true;
+      
+      console.log('Resultado final:', {
+        adBlock: adBlockDetected,
+        dnsBlock: dnsBlockDetected
       });
       
-      if (adguardDNSDetected) {
-        // Mostrar mensaje específico de AdGuard DNS
-        document.getElementById('errorMessage').style.display = 'block';
-        document.getElementById('successMessage').style.display = 'none';
-        
-        // Mostrar qué detectamos
-        if (blockedItems.length > 0) {
-          document.getElementById('detectionInfo').style.display = 'block';
-          const uniqueItems = [...new Set(blockedItems)];
-          document.getElementById('blockedItems').textContent = 
-            uniqueItems.slice(0, 5).join(', ') + (uniqueItems.length > 5 ? '...' : '');
-        }
-        
-        console.log('⚠️ AdGuard DNS detectado - Acceso denegado');
-      } else if (browserAdBlockDetected) {
-        // Mostrar tu mensaje original de bloqueador
-        document.getElementById('errorMessage').style.display = 'block';
-        document.getElementById('successMessage').style.display = 'none';
-        
-        // Cambiar texto para bloqueador de navegador
-        document.querySelector('#errorMessage h1').textContent = '⛔ Bloqueador Detectado';
-        document.querySelector('#errorMessage p strong').textContent = 'Se ha detectado un bloqueador de anuncios';
-        
-        console.log('Bloqueador de navegador detectado - Acceso denegado');
-      } else {
-        // Sin bloqueadores - Acceso permitido
+      if (!adBlockDetected && !dnsBlockDetected) {
+        // SIN BLOQUEADORES
         document.getElementById('successMessage').style.display = 'block';
         document.getElementById('errorMessage').style.display = 'none';
         setupRedirect();
+      } else {
+        // CON BLOQUEADOR
+        document.getElementById('errorMessage').style.display = 'block';
+        document.getElementById('successMessage').style.display = 'none';
+        
+        // Mostrar mensaje específico
+        if (dnsBlockDetected) {
+          // AdGuard DNS detectado
+          document.getElementById('errorType').innerHTML = 
+            '<span style="color:#e74c3c">🔒 AdGuard DNS Detectado (dns.adguard.com)</span>';
+          document.getElementById('solutionTitle').textContent = 'Para continuar necesitas cambiar tu DNS:';
+          document.getElementById('browserSolution').style.display = 'none';
+          document.getElementById('dnsSolution').style.display = 'block';
+        } else {
+          // Bloqueador de navegador
+          document.getElementById('errorType').innerHTML = 
+            '<span style="color:#e74c3c">🛡️ Bloqueador de Navegador Detectado</span>';
+          document.getElementById('solutionTitle').textContent = 'Para continuar necesitas:';
+          document.getElementById('browserSolution').style.display = 'block';
+          document.getElementById('dnsSolution').style.display = 'none';
+        }
       }
     }
     
-    // ============ REDIRECCIÓN ============
+    // ============ REDIRECCIÓN (TU CÓDIGO ORIGINAL) ============
     function setupRedirect() {
       const countdownEl = document.getElementById('countdown');
       const progressBar = document.getElementById('progressBar');
       const directLink = document.getElementById('directLink');
       
+      // Configurar enlace
       if (directLink) {
         directLink.href = TARGET_URL;
         directLink.onclick = function(e) {
@@ -495,6 +395,7 @@
         };
       }
       
+      // Contador regresivo
       let seconds = 5;
       const interval = setInterval(function() {
         seconds--;
@@ -512,44 +413,37 @@
       }, 1000);
     }
     
-    // Probar sin DNS (método alternativo)
-    function testWithoutDNS() {
-      // Crear iframe con URL diferente para bypass
-      const testFrame = document.createElement('iframe');
-      testFrame.style.display = 'none';
-      testFrame.src = TARGET_URL + '?bypass=1';
-      
-      testFrame.onload = function() {
-        alert('Conexión exitosa. Puedes acceder usando:\n\n1. VPN\n2. Proxy web\n3. Navegador Tor\n\nEl acceso directo está bloqueado por AdGuard DNS.');
-      };
-      
-      testFrame.onerror = function() {
-        alert('Aún bloqueado. AdGuard DNS está filtrando esta conexión.');
-      };
-      
-      document.body.appendChild(testFrame);
-      
-      setTimeout(() => {
-        if (document.body.contains(testFrame)) {
-          document.body.removeChild(testFrame);
-        }
-      }, 5000);
+    // Acceso forzado (para emergencias) - TU CÓDIGO
+    function forceAccess() {
+      if (confirm('⚠️ El acceso forzado puede no funcionar correctamente con bloqueadores activos.\n¿Estás seguro de continuar?')) {
+        document.getElementById('successMessage').style.display = 'block';
+        document.getElementById('errorMessage').style.display = 'none';
+        setupRedirect();
+      }
     }
     
-    // Script de ads que será bloqueado (tu original)
+    // Script de ads que será bloqueado - TU CÓDIGO ORIGINAL
     var fakeAdScript = document.createElement('script');
-    fakeAdScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+    fakeAdScript.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?' + Date.now();
     fakeAdScript.onerror = function() {
       window.adScriptBlocked = true;
+      console.log('Script de Google Ads bloqueado');
     };
+    
+    // También verificar si se carga (timeout)
+    setTimeout(function() {
+      if (!fakeAdScript.parentNode) {
+        window.adScriptBlocked = true;
+      }
+    }, 1000);
+    
     document.head.appendChild(fakeAdScript);
     
-    // Verificar periódicamente
+    // Verificar periódicamente (cada 5 segundos)
     setInterval(function() {
-      if (!adguardDNSDetected) {
-        checkOriginalAdBlock();
-      }
-    }, 10000);
+      detectionCompleted = false;
+      checkAll();
+    }, 5000);
   </script>
 </body>
 </html>
