@@ -109,7 +109,7 @@
   <!-- Mensaje de ÉXITO (sin bloqueador) -->
   <div id="successMessage" class="message success" style="display: none;">
     <h1 style="color: #27ae60;">✓ Verificación Exitosa</h1>
-    <p>Redirigiendo al contenido en <span id="countdown">5</span> segundos...</p>
+    <p>Redirigiendo al contenido en <span id="countdown">3</span> segundos...</p>
     <div style="margin: 30px 0;">
       <div style="height: 10px; background: #eee; border-radius: 5px; overflow: hidden;">
         <div id="progressBar" style="height: 100%; background: #2ecc71; width: 0%; transition: width 0.5s;"></div>
@@ -134,13 +134,8 @@
       <p><em>Si usas Brave: Desactiva "Brave Shields" en la barra de direcciones</em></p>
     </div>
     
-    <p style="color: #666; font-size: 14px;">
-      Esta verificación es necesaria para prevenir acceso automatizado y asegurar la disponibilidad del servicio.
-    </p>
-    
     <div style="margin-top: 30px;">
       <button onclick="location.reload()" class="btn">Ya desactivé el bloqueador, recargar</button>
-      <button onclick="forceAccess()" class="btn btn-error">Intentar acceso de emergencia</button>
     </div>
   </div>
 
@@ -247,14 +242,14 @@
         };
       }
       
-      // Contador regresivo
-      let seconds = 5;
+      // Contador regresivo (3 segundos)
+      let seconds = 3;
       const interval = setInterval(function() {
         seconds--;
         
         if (countdownEl) countdownEl.textContent = seconds;
         if (progressBar) {
-          const progress = ((5 - seconds) / 5) * 100;
+          const progress = ((3 - seconds) / 3) * 100;
           progressBar.style.width = progress + '%';
         }
         
@@ -263,16 +258,6 @@
           window.location.href = TARGET_URL;
         }
       }, 1000);
-    }
-    
-    // Acceso forzado (para emergencias)
-    function forceAccess() {
-      if (confirm('⚠️ El acceso forzado puede no funcionar correctamente con bloqueadores activos.\n¿Estás seguro de continuar?')) {
-        // Marcar como sin bloqueador temporalmente
-        document.getElementById('successMessage').style.display = 'block';
-        document.getElementById('errorMessage').style.display = 'none';
-        setupRedirect();
-      }
     }
     
     // Verificar periódicamente (por si activan/desactivan bloqueador)
